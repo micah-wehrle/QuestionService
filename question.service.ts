@@ -41,14 +41,14 @@ export class QuestionService {
     this.questionList = [];
   }
   
-    private questionExists(searchTitle: string): boolean {
-      for(let question of this.questionList) {
-        if(question.title === searchTitle) {
-          return true;
-        }
+  private questionExists(searchTitle: string): boolean {
+    for(let question of this.questionList) {
+      if(question.title === searchTitle) {
+        return true;
       }
-      return false;
     }
+    return false;
+  }
 
   public addQuestionsByCategory(category: string): void {
     const questionsToAdd = this.allQuestions[category];
@@ -80,7 +80,7 @@ export class QuestionService {
   public nextQuestion(removeCurrentQuestion: boolean = false): Question {
 
     if(this.questionList.length === 0) {
-      throw('error');
+      throw('Attempting to access an empty question list!');
     }
 
     if(removeCurrentQuestion) {
@@ -96,19 +96,20 @@ export class QuestionService {
 
     return { 
       ...this.questionList[this.questionIndex], 
-      isLastQuestion: this.questionIndex === this.questionList.length-1 ? true : false 
+      isFirstQuestion: this.questionIndex === 0,
+      isLastQuestion: this.questionIndex === this.questionList.length-1
     };
   }
 
   public previousQuestion(removeCurrentQuestion: boolean = false): Question {
     if(this.questionList.length === 0) {
-      throw('error');
+      throw('Attempting to access an empty question list!');
     }
     
     if(removeCurrentQuestion) {
       this.questionList.splice(this.questionIndex, 1);
     }
-    
+
     this.questionIndex--;
     if(this.questionIndex < 0) {
       this.questionIndex = this.questionList.length-1;
@@ -116,8 +117,13 @@ export class QuestionService {
 
     return { 
       ...this.questionList[this.questionIndex], 
-      isFirstQuestion: this.questionIndex === 0
+      isFirstQuestion: this.questionIndex === 0,
+      isLastQuestion: this.questionIndex === this.questionList.length-1
     };
+  }
+
+  public questionsLength(): number {
+    return this.questionList.length;
   }
 
 
