@@ -73,20 +73,24 @@ export class QuestionService {
     this.questionIndex = 0; // I'd assume the only time you would want to 
   }
 
-  public nextQuestion(removeCurrentQuestion: boolean = false): Question {
+  // public nextQuestion(removeCurrentQuestion: boolean = false): Question {
+  public nextQuestion(options: {removeCurrentQuestion?: boolean, shuffleOnLoop?: boolean} = { removeCurrentQuestion: false, shuffleOnLoop: false}): Question { // This is a little experimental for me, not sure how it'll work!
     if(this.questionList.length === 0) {
       throw('Attempting to access an empty question list!'); // I don't know what this will do honestly lol
     }
 
-    if(removeCurrentQuestion) {
-      this.questionList.splice(this.questionIndex, 1);
+    if(options.removeCurrentQuestion) {
+      this.questionList.splice(this.questionIndex, 1); // Don't need to adjust the index, as the next element in the array will now be at the selected index
     }
     else {
       this.questionIndex++;
     }
 
-    if(this.questionIndex >= this.questionList.length) {
+    if(this.questionIndex >= this.questionList.length) { // Loop back to beginning if we're at the end
       this.questionIndex = 0;
+      if(options.shuffleOnLoop) {
+        this.shuffleQuestions();
+      }
     }
 
     return { 
@@ -164,5 +168,4 @@ export class QuestionService {
   public forceAddQuestionsByCategory(category: string): void {
     this.questionList.concat(this.allQuestions[category]); 
   }
-
 }
